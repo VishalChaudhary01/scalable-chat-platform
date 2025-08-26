@@ -1,5 +1,7 @@
 import { Server } from 'socket.io';
 import { Server as HttpServer } from 'http';
+import { createAdapter } from '@socket.io/cluster-adapter';
+import { setupWorker } from '@socket.io/sticky';
 
 export class SocketServer {
   private static instance: SocketServer;
@@ -17,8 +19,12 @@ export class SocketServer {
   public init(server: HttpServer): void {
     this.io = new Server(server, { cors: { origin: '*' } });
 
+    this.io.adapter(createAdapter());
+
+    setupWorker(this.io);
+
     this.io.on('connection', (socket) => {
-      console.log(`A new client connected`);
+      console.log(`A new client connected to ${process.pid}`);
 
       socket.on('event:message', (message: string) => {
         console.log('message recieved from client: ', message);
