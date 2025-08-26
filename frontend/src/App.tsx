@@ -1,34 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { io, type Socket } from 'socket.io-client';
+import React, { useState } from 'react';
+import { useSocket } from './context/socket.context';
 
 function App() {
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const { messages, sendMessage } = useSocket();
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<string[]>([]);
 
   function handleSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (socket) {
-      socket.emit('event:message', message);
-      setMessage('');
-    }
+    sendMessage(message);
+    setMessage('');
   }
-
-  useEffect(() => {
-    const socket = io('http://localhost:3000');
-    setSocket(socket);
-
-    socket.on('event:message', (msg: string) => {
-      setMessages((prev) => [...prev, msg]);
-      console.log('Message recieved from server: ', msg);
-    });
-
-    return () => {
-      socket.off('event:message');
-      socket.disconnect();
-      setSocket(null);
-    };
-  }, []);
 
   return (
     <div className="flex items-start justify-center min-h-screen w-full max-w-[1400px] mx-auto">
