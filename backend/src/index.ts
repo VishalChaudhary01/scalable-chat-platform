@@ -3,7 +3,6 @@ import { createServer } from 'http';
 import cluster from 'cluster';
 import { cpus } from 'os';
 import { setupMaster } from '@socket.io/sticky';
-import { setupPrimary } from '@socket.io/cluster-adapter';
 import { config } from './configs/env.config';
 import { SocketServer } from './services/socket.service';
 
@@ -11,8 +10,6 @@ const totalCUPs = cpus().length;
 
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
-
-  setupPrimary();
 
   const httpServer = createServer();
 
