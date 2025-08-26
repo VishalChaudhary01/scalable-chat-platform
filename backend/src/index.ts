@@ -1,23 +1,13 @@
 import express from 'express';
 import { config } from './configs/env.config';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
+import { SocketServer } from './services/socket.service';
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, { cors: { origin: '*' } });
 
-io.on('connection', (socket) => {
-  console.log(`A new client connected`);
-  socket.on('event:message', (message: string) => {
-    console.log('message recieved from client: ', message);
-    io.emit('event:message', message);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('A user disconnected');
-  });
-});
+const socketServer = SocketServer.getInstance();
+socketServer.init(server);
 
 app.get('/health', (_req, res) => {
   res.status(200).json({ message: 'Healthy server!' });
