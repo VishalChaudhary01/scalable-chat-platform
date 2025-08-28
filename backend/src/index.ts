@@ -4,14 +4,17 @@ import cluster from 'cluster';
 import { cpus } from 'os';
 import { setupMaster } from '@socket.io/sticky';
 import { config } from './configs/env.config';
-import { SocketServer } from './services/socket.service';
+import { socketService } from './services/socket.service';
+import { kafkaService } from './services/kafka-service';
 
-const totalCUPs = cpus().length;
+export const totalCUPs = cpus().length;
 
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
   const httpServer = createServer();
+
+  kafkaService.initAdmin();
 
   setupMaster(httpServer, {
     loadBalancingMethod: 'least-connection',
@@ -39,8 +42,8 @@ if (cluster.isPrimary) {
   const app = express();
   const server = createServer(app);
 
-  const socketServer = SocketServer.getInstance();
-  socketServer.init(server);
+  socketService.init(server);
+  kafkaService.startConsumer();
 
   app.get('/health', (_req, res) => {
     res.status(200).json({ message: 'Healthy server!' });
