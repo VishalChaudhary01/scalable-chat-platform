@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import { Server as HttpServer } from 'http';
 import { setupWorker } from '@socket.io/sticky';
 import { createShardedAdapter } from '@socket.io/redis-adapter';
-import { prisma } from '../configs/prisma.config';
+import { kafkaService } from './kafka-service';
 
 export class SocketServer {
   private static instance: SocketServer;
@@ -39,11 +39,11 @@ export class SocketServer {
       socket.on('event:message', async (message: string) => {
         try {
           this.io.emit('event:message', message);
-          await prisma.message.create({
-            data: { text: message },
-          });
+          await kafkaService.produceMessage(message);
+          console.log('Message poduced to kafka broker');
         } catch (error) {
-          console.error('Failed to emit message', error);
+          console.error('Failed to emit message: ', error);
+          socket.emit('error', { message: 'Feiled to emit message' });
         }
       });
 
@@ -58,3 +58,5 @@ export class SocketServer {
     return this.io;
   }
 }
+
+export const socketService = SocketServer.getInstance();
