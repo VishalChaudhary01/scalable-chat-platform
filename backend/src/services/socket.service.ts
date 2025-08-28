@@ -3,6 +3,7 @@ import Redis from 'ioredis';
 import { Server as HttpServer } from 'http';
 import { setupWorker } from '@socket.io/sticky';
 import { createShardedAdapter } from '@socket.io/redis-adapter';
+import { prisma } from '../configs/prisma.config';
 
 export class SocketServer {
   private static instance: SocketServer;
@@ -35,8 +36,15 @@ export class SocketServer {
     this.io.on('connection', (socket) => {
       console.log(`A new client connected to ${process.pid}`);
 
-      socket.on('event:message', (message: string) => {
-        this.io.emit('event:message', message);
+      socket.on('event:message', async (message: string) => {
+        try {
+          this.io.emit('event:message', message);
+          await prisma.message.create({
+            data: { text: message },
+          });
+        } catch (error) {
+          console.error('Failed to emit message', error);
+        }
       });
 
       socket.on('disconnect', () => {
