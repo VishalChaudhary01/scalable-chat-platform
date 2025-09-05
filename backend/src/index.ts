@@ -1,11 +1,13 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { createServer } from 'http';
 import cluster from 'cluster';
 import { cpus } from 'os';
 import { setupMaster } from '@socket.io/sticky';
-import { config } from './configs/env.config';
+import { config } from './config/env.config';
 import { socketService } from './services/socket.service';
 import { kafkaService } from './services/kafka-service';
+import { errorHandler } from './middlewares/error-handler';
+import { HttpStatus } from './config/http.config';
 
 export const totalCUPs = cpus().length;
 
@@ -45,9 +47,17 @@ if (cluster.isPrimary) {
   socketService.init(server);
   kafkaService.startConsumer();
 
-  app.get('/health', (_req, res) => {
+  app.get('/health', (_req: Request, res: Response) => {
     res.status(200).json({ message: 'Healthy server!' });
   });
+
+  app.use((req: Request, res: Response, _next: NextFunction) => {
+    res.status(HttpStatus.NOT_FOUND).json({
+      message: `API not found route at PATH: ${req.path}`,
+    });
+  });
+
+  app.use(errorHandler);
 
   console.log(`Worker ${process.pid} setup complete`);
 }
