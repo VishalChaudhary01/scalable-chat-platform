@@ -32,7 +32,9 @@
   "homepage": "https://github.com/VishalChaudhary01/scalable-chat-platform#readme",
   "dependencies": {
     "dotenv": "^17.2.2",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",

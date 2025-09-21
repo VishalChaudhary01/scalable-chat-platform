@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/app-error';
 import { StatusCode } from '../config/status-code.config';
+import { logger } from '../utils/logger';
 
 export function errorHandler(
   error: Error,
@@ -8,7 +9,7 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ) {
-  console.log(`Error occure at PATH: ${req.path}`, error);
+  logger.error(`Error occure at PATH: ${req.path}`, error);
 
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({ message: error.message });
