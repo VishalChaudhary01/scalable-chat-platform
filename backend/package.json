@@ -31,8 +31,10 @@
   },
   "homepage": "https://github.com/VishalChaudhary01/scalable-chat-platform#readme",
   "dependencies": {
+    "@prisma/client": "^6.16.2",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "prisma": "^6.16.2",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"
   },
