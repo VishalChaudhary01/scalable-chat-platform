@@ -1,0 +1,45 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "A scalable chat server with secure authentication using access and refresh tokens, and real-time communication via WebSockets.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "dotenv -- node dist/index.js",
+    "dev": "dotenv -- tsc-watch --onSuccess \"node dist/index.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VishalChaudhary01/scalable-chat-platform.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Express.js",
+    "WebSocket",
+    "TypeScript",
+    "JWT",
+    "PostgreSQL",
+    "Prisma",
+    "Redis",
+    "Apache",
+    "Kafka"
+  ],
+  "author": "Vishal Chaudhary",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VishalChaudhary01/scalable-chat-platform/issues"
+  },
+  "homepage": "https://github.com/VishalChaudhary01/scalable-chat-platform#readme",
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.2",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "dotenv-cli": "^10.0.0",
+    "tsc-watch": "^7.1.1",
+    "typescript": "^5.9.2"
+  }
+}
